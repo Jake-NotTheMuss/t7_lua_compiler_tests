@@ -1,0 +1,11 @@
+# log files
+*.log
+# generated files
+zone/
+zone_source/all/
+zone_source/english/
+zone_source/loc/
+# compiled Lua
+tests/*.luac
+tests/*.luacallstackdb
+tests/*.luadebug
