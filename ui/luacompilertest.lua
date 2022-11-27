@@ -26,3 +26,29 @@ end
 function RunLuaChunkTests()
 	callDLL("load_chunks");
 end
+
+callDLL("init");
+
+-- need to redefine some functions
+require("ui.uieditor.actions")
+
+-- when this mod is unloaded, the dll will also be unloaded
+function Mods_LoadMod(controller, element)
+	callDLL("close")
+	local data = {
+		ugcName = CoD.SafeGetModelValue(element:getModel(), "ugcName");
+		ugcType = LuaEnums.MODS_BASE_PATH,
+		ugcVersion = 1
+	};
+	Engine.LobbyVM_CallFunc("LoadMod", data);
+end
+
+function Mods_Unload(controller, element)
+	callDLL("close")
+	local data = {
+		ugcName = "",
+		ugcType = LuaEnums.MODS_BASE_PATH,
+		ugcVersion = 1
+	};
+	Engine.LobbyVM_CallFunc("LoadMod", data);
+end

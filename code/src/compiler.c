@@ -344,6 +344,7 @@ static void loadfilechunk(const char *filename) {
   } else {
     debuglog("'%s' was not loaded successfully", filename);
   }
+  free(buff);
 }
 
 /* execute a compilation test */
@@ -577,6 +578,21 @@ static void finished(void) {
   if (ferrorlog) fclose(ferrorlog);
 }
 
+static HMODULE thisdll; /* this module */
+
+/* decrement the reference count to this module by calling FreeLibrary */
+static void decrefcount(void) {
+  lassert(thisdll != NULL);
+  FreeLibrary(thisdll);
+}
+
+/* get the handle to this module from the entry function */
+BOOL APIENTRY DllMain(HMODULE h, DWORD reason, LPVOID reserved) {
+  (void)reason; (void)reserved;
+  thisdll = h;
+  return TRUE;
+}
+
 
 /******************************************************************************/
 /* Lua C functions */
@@ -589,6 +605,7 @@ extern "C" {
 
 int __declspec(dllexport) run_tests (lua_State *s) {
   luaVM = s;
+  decrefcount(); /* a call to LoadLibrary was made */
   setup(); /* do initial setup stuff before changing current directory */
   cd2testdir();/* allow chunk names to match across machines as relative paths*/
   forfiles(".lua", compilefile); /* parse all Lua files in the test folder */
@@ -599,12 +616,35 @@ int __declspec(dllexport) run_tests (lua_State *s) {
 
 int __declspec(dllexport) load_chunks (lua_State *s) {
   luaVM = s;
-  run_tests(s);
+  run_tests(s); /* ref count is decremented in run_tests */
   setup();
   cd2testdir();
   forfiles(".luac", loadfilechunk);
   cd2gamedir();
   finished();
+  return 0;
+}
+
+static int dll_initialized = 0;
+
+/* create a reference to this module, do not  */
+int __declspec(dllexport) init (lua_State *s) {
+  luaVM = s;
+  lassert(dll_initialized == 0);
+  dll_initialized = 1;
+  return 0;
+}
+
+
+static void closelib(HMODULE h) {
+  FreeLibraryAndExitThread(h, EXIT_SUCCESS);
+}
+
+int __declspec(dllexport) close (lua_State *s) {
+  luaVM = s;
+  decrefcount(); /* a call to LoadLibrary was made */
+  lassert(dll_initialized);
+  CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)closelib, thisdll, 0, 0);
   return 0;
 }
 

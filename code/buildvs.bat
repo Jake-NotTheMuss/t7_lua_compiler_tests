@@ -60,3 +60,6 @@ del compiler.obj
 popd
 
 exit /b %EXITSTATUS%
+
+:FAIL
+exit /b 1
