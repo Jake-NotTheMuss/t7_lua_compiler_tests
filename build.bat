@@ -2,6 +2,8 @@
 
 setlocal
 
+cd "%~dp0"
+
 set ME=%0
 
 set BUILD_MOD=0
