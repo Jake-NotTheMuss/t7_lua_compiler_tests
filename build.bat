@@ -6,6 +6,8 @@ cd "%~dp0"
 
 set ME=%0
 
+set EXITSTATUS=0
+
 set BUILD_MOD=0
 set BUILD_DLL=0
 
@@ -72,9 +74,13 @@ goto SUCCESS
 :FAIL
 echo Build failed
 :ERR
-exit /b 1
+set EXITSTATUS=1
+goto EOF
 
 :SUCCESS
 echo Build succeeded
 
 :EOF
+echo %CMDCMDLINE% | findstr /i /c:"%~nx0" && set dopause=1
+if DEFINED dopause pause
+exit /b %EXITSTATUS%
