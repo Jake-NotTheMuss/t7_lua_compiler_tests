@@ -67,7 +67,7 @@ call "%~dp0\code\buildvs.bat"
 
 echo.
 
-if not errorlevel 0 goto FAIL
+if %errorlevel% neq 0 goto FAIL
 
 goto SUCCESS
 

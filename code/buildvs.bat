@@ -50,12 +50,13 @@ set modroot=%cd%
 pushd %~dp0\src
 
 %COMPILECMD% compiler.c
-if errorlevel 0 (
+if %errorlevel% equ 0 (
 %LINKCMD% /DLL /out:"%modroot%\zone\T7LuaCompiler.dll" compiler.obj
 )
-if not errorlevel 0 set EXITSTATUS=1
+if %errorlevel% neq 0 set EXITSTATUS=1
 
-del compiler.obj
+
+del compiler.obj 2>NUL
 
 popd
 
