@@ -210,13 +210,10 @@ static void *xmalloc(size_t n) {
 /******************************************************************************/
 
 /* lua_Writer for dumping precompiled chunks to a file */
-static int writer(lua_State *L, const void *p, size_t sz, void *ud) {
-  size_t size;
-  FILE *f = (FILE *)ud;
+static int writer(lua_State *L, const void *p, size_t size, void *ud) {
   (void)L;
-  size = fwrite(p, 1, sz, f);
-  /*debuglog("writer called,  %zu in, %zu written", sz, size);*/
-  return (size > 0) ? 0 : 1;
+  /*debuglog("writer called, size = %zu", size);*/
+  return (fwrite(p,size,1,(FILE *)ud)!=1) && (size!=0);
 }
 
 
@@ -373,8 +370,7 @@ static void compilefile(const char *name) {
   *chunkname = '@';
   strcpy(chunkname+1,name); /* chunk name '@<file>' */
   buff = loadfile(name, &size); /* load file */
-  debuglog("calling precompile_lua(%p, %zu, \"%s\", files", buff, size,
-           chunkname);
+  debuglog("calling precompile_lua(%p, %zu, \"%s\")", buff, size, chunkname);
   status = precompile_lua(buff, size, chunkname, names); /* compile and dump */
   free(names[0]);
   free(buff);
