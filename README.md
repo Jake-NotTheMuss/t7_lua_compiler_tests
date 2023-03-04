@@ -1,6 +1,11 @@
 T7 Lua Compiler Interface
 =========================
 
+## Compatibility
+For compatibility with the 03/03/2023 patch, use version >= 1.0.3.
+
+## About
+
 Performs compilation of Lua scripts using the Black Ops III Havok Script
 compiler.
 
