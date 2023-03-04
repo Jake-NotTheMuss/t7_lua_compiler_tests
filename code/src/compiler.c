@@ -174,15 +174,15 @@ static void errorlog (const char *fmt, ...) {
 /* Initialize symbols in Black Ops III */
 static void init_symbols(void) {
   /* data */
-  INIT_DATA(modname, 0x1678ed04, const char *);
+  INIT_DATA(modname, 0x1678cd04, const char *);
   /* symbols */
   INIT_SYMBOL(hksi_hksL_loadbuffer,   0x1d4bd80);
   INIT_SYMBOL(hksi_hks_dump,          0x1d4be40);
-  INIT_SYMBOL(lua_pushfstring,        0x1d4e600);
-  INIT_SYMBOL(lua_pushvfstring,       0x1d4e630);
-  INIT_SYMBOL(luaL_error,             0x1d53050);
+  INIT_SYMBOL(lua_pushfstring,        0x1d4e570);
+  INIT_SYMBOL(lua_pushvfstring,       0x1d4e5e0);
+  INIT_SYMBOL(luaL_error,             0x1d52fc0);
   INIT_SYMBOL(hks_error,              0x1d4c060);
-  INIT_SYMBOL(luaD_pcall,             0x1d6a320);
+  INIT_SYMBOL(luaD_pcall,             0x1d6a290);
 }
 
 /******************************************************************************/
